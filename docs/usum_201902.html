@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>ucum_201905-test</title>
+<title>usum_201902</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13116,9 +13116,9 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Evaluation-of-the-RESTful-API-for-molar-to-mass-concentration-conversion-using-UCUM-and-LOINC">Evaluation of the RESTful API for molar to mass concentration conversion using UCUM and LOINC<a class="anchor-link" href="#Evaluation-of-the-RESTful-API-for-molar-to-mass-concentration-conversion-using-UCUM-and-LOINC">&#182;</a></h1><p><strong>Sam Tomioka</strong></p>
-<p><strong>May 4, 2019</strong></p>
-<h2 id="1-Introduction">1 Introduction<a class="anchor-link" href="#1-Introduction">&#182;</a></h2><p>The verification of scientific units and conversion from the reported units to standard units have been always challenging for Data Science due to several reasons:</p>
+<h1 id="Automated-validation-and-conversion-of-units-used-in-clinical-trials">Automated validation and conversion of units used in clinical trials<a class="anchor-link" href="#Automated-validation-and-conversion-of-units-used-in-clinical-trials">&#182;</a></h1><p><strong>Sam Tomioka</strong></p>
+<p><strong>Feb 20, 2019</strong></p>
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>The verification of scientific units and conversion from the reported units to standard units have been always challenging for Data Science due to several reasons:</p>
 
 <pre><code>1. Need a lookup table that consists of all possible input and output units for measurements, name of the measurements (e.g. Glucose, Weight, ...), conversion factors, molar weights etc.
 2. The names of the measurement in the lookup table and incoming data must match
@@ -13128,17 +13128,15 @@ div#notebook {
 and more...
 
 </code></pre>
-<p>Despite the challenges, the lookup table approach is norm for many companies for verification of the units and conversion. Consideration was give for more systematic approach that does not require to use the lab test names[1], but some units rely on molar weight and/or valence of ion of the specific lab tests, so this approach does not solve the problem. The regulatory agencies require sponsor to use standardized units for reporting and analysis[2]. The PMDA requires SI units for all reporting and analysis[3,4]. The differences in requirement force us to maintain region specific conversion for some measurements which add additional complexity.</p>
-<p>The approach Jozef Aerts discussed uses RestAPI available through <a href="https://ucum.nlm.nih.gov/ucum-lhc/index.html">Unified Code for Units of Measure (UCUM) Resources</a> which is maintained by the US National Library of Medicine[5]. The benefit is obvious that we can potentially eliminate the maintenance of the lab conversion lookup table. Here is what they say about themself.</p>
+<p>Despite the challenges, the lookup table approach is norm for many companies for verification of the units and conversion. Consideration was give for more systematic approach that does not require to use lab test names[1], but some units relies on molar weight and/or valence of ion of the specific lab tests so this approach does not solve the problem. The regulatory agencies require sponsor to use standardized units for reporting and analysis[2]. The PMDA requires SI units for all reporting and analysis[3,4]. The differences in requirement force us to maintain region specific conversion for some measurements which add additional complexity.</p>
+<p>The approach Jozef Aerts discussed uses RestAPI request to the <a href="https://ucum.nlm.nih.gov/ucum-lhc/index.html">Unified Code for Units of Measure (UCUM) Resources</a> from the US National Library of Medicine[5]. The benefit is obvious that we can potentially eliminate the maintenance of the lab conversion lookup table. Here is what they say about themself.</p>
 <blockquote><p>The Unified Code for Units of Measure (UCUM) is a code system intended to include all units of measures being contemporarily used in international science, engineering, and business. The purpose is to facilitate unambiguous electronic communication of quantities together with their units. The focus is on electronic communication, as opposed to communication between humans. A typical application of The Unified Code for Units of Measure are electronic data interchange (EDI) protocols, but there is nothing that prevents it from being used in other types of machine communication.</p>
 </blockquote>
-<p>The UCUM is the ISO 11240 compliant standard and has been used in ICSR E2B submissions for regulators adopted ICH E2B(R3). <a href="https://www.fda.gov/industry/fda-resources-data-standards/units-measurement">FDA requires the UCUM codes</a> for the <a href="https://www.fda.gov/media/98617/download">eVAERS ICSR E2B (R3) submissions</a>, <a href="https://www.fda.gov/industry/fda-resources-data-standards/structured-product-labeling-resources">dosage strength in both content of product labeling</a> and <a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/providing-regulatory-submissions-electronic-format-drug-establishment-registration-and-drug-listing">Drug Establishment Registration and Drug Listing</a>.</p>
-<h3 id="1-1-Update-May-2019">1-1 Update May 2019<a class="anchor-link" href="#1-1-Update-May-2019">&#182;</a></h3><p>Jozef Aerts <a href="http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf">announced</a> a updated RESTful API which accounts for the molecular weights of the analyte into the conversion between molar and mass concentrations. This additional functionality would faciliate the conversion of the lab results, verification of the standardized lab results and LOINC code provided by the vendors.</p>
-<p>Although CDISC released a downloadable <a href="https://www.cdisc.org/standards/terminology">CDISC UNIT and UCUM mapping xlsx file</a>, this evaluation will not use it since CDISC UNIT does not cover all reported units used by the clinical laboratory/bioanalytical/PK vendors. Regular expression along with UCUM unit validity service were used to convert and verify the units provided by the lab vendors.</p>
-<p>Initial evaluation was done on RestAPI available through <a href="https://ucum.nlm.nih.gov/ucum-lhc/index.html">Unified Code for Units of Measure (UCUM) Resources</a> and the findings are summarized in <strong>2-1</strong>.
-The second evaluation is completed on the test version of RestAPI provided by Jozef Aerts at <a href="http://www.xml4pharma.com/">xml4pharma</a></p>
-<h2 id="2-Findings">2 Findings<a class="anchor-link" href="#2-Findings">&#182;</a></h2><h3 id="2-1-Prior-Work">2-1 Prior Work<a class="anchor-link" href="#2-1-Prior-Work">&#182;</a></h3><p>Previoiusly the production version of RestAPI provided by US National Library of Medicine was evaluated. See <a href="usum_201902.ipynb">here</a> for more detail.</p>
-<p>6458 laboratory records were used to test UCUM RestAPI. These records are from one of the ongoing clinical trial with standard set of clinical laboratory tests.
+<p>The UCUM is the ISO 11240 compliant standard. FDA uses the UCUM syntax standard for dosage strength in both content of product labeling and drug establishment registration and drug listing.</p>
+<p><strong>Something to note:</strong></p>
+<p>The units used in API call has to be compliant with the <a href="http://unitsofmeasure.org/ucum.html">USUM specifications</a>. In addition, URL encoding has to be applied for some special characters. URL encoding can be found <a href="https://en.wikipedia.org/wiki/Percent-encoding">here</a>. 
+In this quick proof of concept, regular expression is used to update the input units to USUM compliant unit.</p>
+<h2 id="Brief-summary-of-findings">Brief summary of findings<a class="anchor-link" href="#Brief-summary-of-findings">&#182;</a></h2><p>6458 laboratory records were used to test USUM RestAPI. These records are from one of the ongoing clinical trial with standard set of clinical laboratory tests.
 Out of 6458 records, there were 321 records identified as incorrect conversions. 
 Out of 322 findings, 169 was false positive which is due to lack of accounting valence of ion with respect to mEq to molar unit conversion.</p>
 <table>
@@ -13195,7 +13193,8 @@ There were 2022 records where the source and target unit do not have the same pr
 <li>Need to account for valence of ion with respect to mEq to molar unit conversion</li>
 <li>Need for an option to specify molar weight or LOINC code for accurate unit conversion with respect to molar unit.</li>
 </ol>
-<h3 id="2-2-Findings-on-'molar-mass'-conversion-with-LOINC--(May-2019)">2-2 Findings on 'molar-mass' conversion with LOINC  (May 2019)<a class="anchor-link" href="#2-2-Findings-on-'molar-mass'-conversion-with-LOINC--(May-2019)">&#182;</a></h3><h2 id="Thought">Thought<a class="anchor-link" href="#Thought">&#182;</a></h2><p>This approach has potential and can be used for any units (PK, Lab, ECG, Vital Signs etc). With addition of mass-mol conversion in near future, we could replace the current lab conversion lookup. However, initial implementation of mass-mol conversion may require us to supply molar weight during API request which will prohibit us from completely get rid of the existing lookup table. Additional verifications such as LBCAT-LBTEST-LBTESTCD unique pair, on lab data will be required separately. Addition of LOINC is thus strongly desired.</p>
+<p>*According to [Paul Lynch (NIH/NLM/LHC), addition of mass-mol conversions to the ucum-lhc library are nealy complete on their end.</p>
+<h2 id="Thought">Thought<a class="anchor-link" href="#Thought">&#182;</a></h2><p>This approach has potential and can be used for any units (PK, Lab, ECG, Vital Signs etc). With addition of mass-mol conversion in near future, we could replace the current lab conversion lookup. However, initial implementation of mass-mol conversion may require us to supply molar weight during API request which will prohibit us from completely get rid of the existing lookup table. Additional verifications such as LBCAT-LBTEST-LBTESTCD unique pair, on lab data will be required separately. Addition of LOINC is thus strongly desired.</p>
 
 </div>
 </div>
@@ -13212,25 +13211,9 @@ There were 2022 records where the source and target unit do not have the same pr
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Something to note:</strong></p>
-<p>The units used in API call has to be compliant with the <a href="http://unitsofmeasure.org/ucum.html">USUM specifications</a>. In addition, URL encoding has to be applied for some special characters. URL encoding can be found <a href="https://en.wikipedia.org/wiki/Percent-encoding">here</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3-Scripts">3 Scripts<a class="anchor-link" href="#3-Scripts">&#182;</a></h2><h3 id="3-1-Initialization">3-1 Initialization<a class="anchor-link" href="#3-1-Initialization">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
@@ -13238,16 +13221,11 @@ There were 2022 records where the source and target unit do not have the same pr
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="c1"># Visual</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-
-<span class="c1">#my utilities</span>
-<span class="kn">from</span> <span class="nn">lib.ucum</span> <span class="k">import</span> <span class="o">*</span>
-
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
 <span class="n">bucket</span><span class="o">=</span><span class="s1">&#39;snvn-sagemaker-1&#39;</span> <span class="c1">#data bucket</span>
 <span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
-<span class="n">url</span><span class="o">=</span><span class="s1">&#39;http://xml4pharmaserver.com:8080/UCUMService2/rest&#39;</span>
 </pre></div>
 
     </div>
@@ -13255,23 +13233,15 @@ There were 2022 records where the source and target unit do not have the same pr
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3-2-Copy-data-to-notebook">3-2 Copy data to notebook<a class="anchor-link" href="#3-2-Copy-data-to-notebook">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">KEY</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;mldata&#39;</span><span class="p">,</span><span class="s1">&#39;Sam&#39;</span><span class="p">,</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="s1">&#39;project&#39;</span><span class="p">,</span><span class="s1">&#39;pool&#39;</span><span class="p">,</span><span class="s1">&#39;lb.sas7bdat&#39;</span><span class="p">)</span> 
-<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">KEY</span><span class="o">=</span><span class="s1">&#39;mldata/Sam/data/093-701/lb_q2.sas7bdat&#39;</span> 
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">Bucket</span><span class="p">(</span><span class="n">bucket</span><span class="p">)</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">KEY</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span><span class="s1">&#39;sdtm_lb.sas7bdat&#39;</span><span class="p">))</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">Bucket</span><span class="p">(</span><span class="n">bucket</span><span class="p">)</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">KEY</span><span class="p">,</span> <span class="s1">&#39;data/raw_lb.sas7bdat&#39;</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ClientError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;Error&#39;</span><span class="p">][</span><span class="s1">&#39;Code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;404&quot;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The object does not exist.&quot;</span><span class="p">)</span>
@@ -13284,42 +13254,41 @@ There were 2022 records where the source and target unit do not have the same pr
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3-3-Retain-records-for-verification">3-3 Retain records for verification<a class="anchor-link" href="#3-3-Retain-records-for-verification">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">rlb</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_sas</span><span class="p">(</span><span class="s1">&#39;data/raw_lb.sas7bdat&#39;</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of studies: &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">rlb</span><span class="p">[</span><span class="s1">&#39;STUDYID&#39;</span><span class="p">]))))</span>
-<span class="n">df</span><span class="o">=</span><span class="n">rlb</span><span class="p">[[</span><span class="s1">&#39;LBTESTCD&#39;</span><span class="p">,</span><span class="s1">&#39;LBTEST&#39;</span><span class="p">,</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">,</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">,</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">,</span><span class="s1">&#39;LBSTRESN&#39;</span><span class="p">,</span><span class="s1">&#39;LBLOINC&#39;</span><span class="p">]]</span>
-<span class="c1">#df=df[df[&#39;LBORRESU&#39;]!=&#39;LBSTRESU&#39;] #since we don&#39;t need to verify</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of records in the input: &#39;</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-
-<span class="c1">#Cleaning Input Data</span>
-<span class="n">df1</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">df1</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">df1</span><span class="p">[</span><span class="s1">&#39;ge&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span>
-<span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removed records with missing units: &#39;</span><span class="p">,</span> <span class="n">df1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="c1">#Remove records not needed for verification</span>
-<span class="c1">#1. results contain character</span>
-<span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[a-zA-Z ]+&#39;</span><span class="p">,</span><span class="s1">&#39;XXX&#39;</span><span class="p">)</span>
-
-<span class="n">df1</span><span class="o">=</span><span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;XXX&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removed records with character results: &#39;</span><span class="p">,</span><span class="n">df1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="c1">#2. both units are the same</span>
-<span class="n">df1</span><span class="o">=</span><span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">]</span><span class="o">!=</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">]]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removed records do not require conversion: &#39;</span><span class="p">,</span><span class="n">df1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df</span><span class="o">=</span><span class="n">rlb</span><span class="p">[[</span><span class="s1">&#39;LBTESTCD&#39;</span><span class="p">,</span><span class="s1">&#39;LBTEST&#39;</span><span class="p">,</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">,</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">,</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">,</span><span class="s1">&#39;LBSTRESN&#39;</span><span class="p">]]</span>
+<span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">)]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;ge&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBORRES&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(6458, 7)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13327,53 +13296,23 @@ There were 2022 records where the source and target unit do not have the same pr
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's see what units have been used in the input datasets</p>
+<p>Get unique units and convert them to UCUM</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bar_hm</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="s1">&#39;Units found in the input data (counts)&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3-4-Define-regular-expression-used-to-convert-the-input-units-to-UCUM">3-4 Define regular expression used to convert the input units to UCUM<a class="anchor-link" href="#3-4-Define-regular-expression-used-to-convert-the-input-units-to-UCUM">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Regular expressions. --- update this based on raw data</span>
 <span class="n">patterns</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;%&quot;</span><span class="p">,</span><span class="s2">&quot;%25&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;\A[xX]?10[^E]&quot;</span><span class="p">,</span> <span class="s2">&quot;10*&quot;</span><span class="p">),</span>
+           <span class="p">(</span><span class="s2">&quot;\A[xX]10E&quot;</span><span class="p">,</span> <span class="s2">&quot;10*&quot;</span><span class="p">),</span>
            <span class="p">(</span><span class="s2">&quot;IU&quot;</span><span class="p">,</span> <span class="s2">&quot;%5BIU%5D&quot;</span><span class="p">),</span>
            <span class="p">(</span><span class="s2">&quot;\Anan&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;\ANONE&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;\A[rR][Aa][Tt][Ii][Oo]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;\ApH&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>            
-           <span class="p">(</span><span class="s2">&quot;Eq[l]?&quot;</span><span class="p">,</span><span class="s2">&quot;eq&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;\ATI/L&quot;</span><span class="p">,</span><span class="s2">&quot;T/L&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;\AGI/L&quot;</span><span class="p">,</span><span class="s2">&quot;G/L&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;V/V&quot;</span><span class="p">,</span><span class="s2">&quot;L/L&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;[a-z]{0,4}/HPF&quot;</span><span class="p">,</span><span class="s2">&quot;/%5BHPF%5D&quot;</span><span class="p">),</span>
-           <span class="p">(</span><span class="s2">&quot;[a-z]{0,4}/LPF&quot;</span><span class="p">,</span><span class="s2">&quot;/%5BLPF%5D&quot;</span><span class="p">),</span> 
-           <span class="p">(</span><span class="s2">&quot;fraction of 1&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;sec&quot;</span><span class="p">,</span><span class="s2">&quot;s&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s2">&quot;1.73m2&quot;</span><span class="p">,</span><span class="s2">&quot;%7B1.73_m2%7D&quot;</span><span class="p">)</span>       
+           <span class="p">(</span><span class="s2">&quot;Eq&quot;</span><span class="p">,</span><span class="s2">&quot;eq&quot;</span><span class="p">),</span>
+           <span class="p">(</span><span class="s2">&quot;V/V&quot;</span><span class="p">,</span><span class="s2">&quot;L/L&quot;</span><span class="p">)</span>
            <span class="p">]</span>
 </pre></div>
 
@@ -13382,33 +13321,52 @@ There were 2022 records where the source and target unit do not have the same pr
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3-5-Functions-used">3-5 Functions used<a class="anchor-link" href="#3-5-Functions-used">&#182;</a></h3><ol>
-<li>cleanlist: a helper function which takes the elements of patterns to output UCUM conformant unit</li>
-<li>orresu2ucum: a function which takes the dataframe containing LBORRESU and LBSTRESU, and apply <code>cleanlist</code></li>
-<li>ucumVerify: a function which takes the list of units to verify the conformance to UCUM using <code>isValidUCUM</code> and returns a list with either True or False. </li>
-<li>convert_unit: a function which takes the dataframe containing LBORRESU and LBSTRESU in UCUM and returns a dataframe where original LBSTRESN is not equal to LBSTRESN from the <a href="https://ucum.nlm.nih.gov/ucum-lhc/demo.html">UCUM-LHC Converter</a></li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3-6-Verify-converted-UCUM">3-6 Verify converted UCUM<a class="anchor-link" href="#3-6-Verify-converted-UCUM">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfconverted</span><span class="p">,</span> <span class="n">ucumlist</span><span class="o">=</span><span class="n">orresu2ucum</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">patterns</span><span class="p">)</span>
-<span class="n">ucumVerify</span><span class="p">(</span><span class="n">ucumlist</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">convert_unit</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+    <span class="n">original</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">,</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">))</span>
+    <span class="n">original</span><span class="o">=</span><span class="n">original</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="c1">#print(&quot;units in dataset: &quot;, original)</span>
+    <span class="n">ucum</span><span class="o">=</span><span class="n">original</span>
+    <span class="k">def</span> <span class="nf">cleanlist</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">regex</span><span class="p">,</span> <span class="n">substitution</span><span class="p">):</span>
+        <span class="n">cleaned_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">substitution</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">))</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">cleaned_list</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+        <span class="n">ucum</span><span class="o">=</span><span class="n">cleanlist</span><span class="p">(</span><span class="n">ucum</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">sub</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">ucum</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBORRESU&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;%&#39;</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;LBORRESU&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;%{&#39;</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBTESTCD&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;}&#39;</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBSTRESU&#39;</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;%&#39;</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;LBSTRESU&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;%{&#39;</span><span class="o">+</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBTESTCD&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;}&#39;</span>
+    <span class="n">checklist</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="s2">&quot;https://ucum.nlm.nih.gov/ucum-service/v1/ucumtransform/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;/from/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;/to/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">checklist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>  
+    <span class="n">response</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">checklist</span><span class="p">)):</span>
+        <span class="c1">#print(checklist[i], i)</span>
+        <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">checklist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">as</span> <span class="n">res</span><span class="p">:</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">context</span><span class="p">:</span>
+                <span class="n">tmp1</span><span class="o">=</span><span class="p">[]</span>
+                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">text</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
+                    <span class="c1">#print(child.text)</span>
+                    <span class="n">tmp1</span><span class="o">=</span><span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">text</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;NaN&#39;</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;NaN&#39;</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;NaN&#39;</span><span class="p">)]</span>
+                <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">text</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">child</span><span class="p">:</span>
+                        <span class="n">tmp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp1</span><span class="p">)</span>
+    <span class="n">fromucmc</span><span class="o">=</span><span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="p">))]</span>
+    <span class="n">rawdata</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LBSTRESN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fromucmc&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">fromucmc</span>
+    <span class="n">check</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="o">!=</span><span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fromucmc</span><span class="p">,</span> <span class="n">rawdata</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">check</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13418,31 +13376,10 @@ There were 2022 records where the source and target unit do not have the same pr
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bar_hm</span><span class="p">(</span><span class="n">dfconverted</span><span class="p">,</span><span class="s1">&#39;UCUM found in the input data (counts)&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3-7-Verify-Conversion">3-7 Verify Conversion<a class="anchor-link" href="#3-7-Verify-Conversion">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">Time</span>
-findings,full,response=convert_unit(df, url, patterns,loinconly=0)
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">issue</span><span class="o">=</span><span class="n">convert_unit</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">patterns</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13457,62 +13394,1472 @@ findings,full,response=convert_unit(df, url, patterns,loinconly=0)
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Discrepancies between LBSTRESN and Conversion based on UCUM</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">discrepant</span><span class="o">=</span><span class="n">findings</span><span class="p">[(</span><span class="n">findings</span><span class="p">[</span><span class="s1">&#39;fromucum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">())]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">issue</span><span class="p">[(</span><span class="n">issue</span><span class="p">[</span><span class="s1">&#39;fromucmc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">())]</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>LBTESTCD</th>
+      <th>LBTEST</th>
+      <th>LBORRES</th>
+      <th>LBORRESU</th>
+      <th>LBSTRESU</th>
+      <th>LBSTRESN</th>
+      <th>ge</th>
+      <th>fromucmc</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>43.1</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.43</td>
+      <td>[]</td>
+      <td>0.431</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.81</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+    <tr>
+      <th>61</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>43.2</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.43</td>
+      <td>[]</td>
+      <td>0.432</td>
+    </tr>
+    <tr>
+      <th>83</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.8</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.88</td>
+      <td>[]</td>
+      <td>1.800</td>
+    </tr>
+    <tr>
+      <th>110</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>38.9</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.39</td>
+      <td>[]</td>
+      <td>0.389</td>
+    </tr>
+    <tr>
+      <th>132</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.5</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.76</td>
+      <td>[]</td>
+      <td>1.500</td>
+    </tr>
+    <tr>
+      <th>170</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>37.6</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.38</td>
+      <td>[]</td>
+      <td>0.376</td>
+    </tr>
+    <tr>
+      <th>192</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.5</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.76</td>
+      <td>[]</td>
+      <td>1.500</td>
+    </tr>
+    <tr>
+      <th>216</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>42.9</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.43</td>
+      <td>[]</td>
+      <td>0.429</td>
+    </tr>
+    <tr>
+      <th>238</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.5</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.77</td>
+      <td>[]</td>
+      <td>1.500</td>
+    </tr>
+    <tr>
+      <th>273</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>41.4</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.41</td>
+      <td>[]</td>
+      <td>0.414</td>
+    </tr>
+    <tr>
+      <th>295</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.86</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>341</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.83</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>380</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>44.5</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.45</td>
+      <td>[]</td>
+      <td>0.445</td>
+    </tr>
+    <tr>
+      <th>402</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.81</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+    <tr>
+      <th>429</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>41.2</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.41</td>
+      <td>[]</td>
+      <td>0.412</td>
+    </tr>
+    <tr>
+      <th>473</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.84</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>489</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>41.5</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.42</td>
+      <td>[]</td>
+      <td>0.415</td>
+    </tr>
+    <tr>
+      <th>511</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.80</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+    <tr>
+      <th>534</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>45.3</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.45</td>
+      <td>[]</td>
+      <td>0.453</td>
+    </tr>
+    <tr>
+      <th>556</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.8</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.92</td>
+      <td>[]</td>
+      <td>1.800</td>
+    </tr>
+    <tr>
+      <th>590</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>44.8</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.45</td>
+      <td>[]</td>
+      <td>0.448</td>
+    </tr>
+    <tr>
+      <th>612</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.82</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+    <tr>
+      <th>646</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>45.6</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.46</td>
+      <td>[]</td>
+      <td>0.456</td>
+    </tr>
+    <tr>
+      <th>668</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.86</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>713</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.86</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>749</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>46.6</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.47</td>
+      <td>[]</td>
+      <td>0.466</td>
+    </tr>
+    <tr>
+      <th>771</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.83</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>787</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>47.3</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.47</td>
+      <td>[]</td>
+      <td>0.473</td>
+    </tr>
+    <tr>
+      <th>803</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>40.9</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.41</td>
+      <td>[]</td>
+      <td>0.409</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>8563</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>43.9</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.44</td>
+      <td>[]</td>
+      <td>0.439</td>
+    </tr>
+    <tr>
+      <th>8585</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.83</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>8624</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>49.1</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.49</td>
+      <td>[]</td>
+      <td>0.491</td>
+    </tr>
+    <tr>
+      <th>8646</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.87</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>8683</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>34.1</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.34</td>
+      <td>[]</td>
+      <td>0.341</td>
+    </tr>
+    <tr>
+      <th>8705</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.86</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>8744</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>43.6</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.44</td>
+      <td>[]</td>
+      <td>0.436</td>
+    </tr>
+    <tr>
+      <th>8766</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.81</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+    <tr>
+      <th>8804</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>38.1</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.38</td>
+      <td>[]</td>
+      <td>0.381</td>
+    </tr>
+    <tr>
+      <th>8826</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.86</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>8865</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>45.9</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.46</td>
+      <td>[]</td>
+      <td>0.459</td>
+    </tr>
+    <tr>
+      <th>8887</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>2.1</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>1.03</td>
+      <td>[]</td>
+      <td>2.100</td>
+    </tr>
+    <tr>
+      <th>8926</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>39.8</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.40</td>
+      <td>[]</td>
+      <td>0.398</td>
+    </tr>
+    <tr>
+      <th>8948</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.83</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>8987</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>40.6</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.41</td>
+      <td>[]</td>
+      <td>0.406</td>
+    </tr>
+    <tr>
+      <th>9009</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.80</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+    <tr>
+      <th>9050</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>46.8</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.47</td>
+      <td>[]</td>
+      <td>0.468</td>
+    </tr>
+    <tr>
+      <th>9072</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.9</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.96</td>
+      <td>[]</td>
+      <td>1.900</td>
+    </tr>
+    <tr>
+      <th>9109</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>40.1</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.40</td>
+      <td>[]</td>
+      <td>0.401</td>
+    </tr>
+    <tr>
+      <th>9131</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.3</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.67</td>
+      <td>[]</td>
+      <td>1.300</td>
+    </tr>
+    <tr>
+      <th>9172</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>43.9</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.44</td>
+      <td>[]</td>
+      <td>0.439</td>
+    </tr>
+    <tr>
+      <th>9194</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.8</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.92</td>
+      <td>[]</td>
+      <td>1.800</td>
+    </tr>
+    <tr>
+      <th>9241</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>37.2</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.37</td>
+      <td>[]</td>
+      <td>0.372</td>
+    </tr>
+    <tr>
+      <th>9263</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.80</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+    <tr>
+      <th>9300</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>45.7</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.46</td>
+      <td>[]</td>
+      <td>0.457</td>
+    </tr>
+    <tr>
+      <th>9322</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.8</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.92</td>
+      <td>[]</td>
+      <td>1.800</td>
+    </tr>
+    <tr>
+      <th>9372</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>39.9</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.40</td>
+      <td>[]</td>
+      <td>0.399</td>
+    </tr>
+    <tr>
+      <th>9394</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.7</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.84</td>
+      <td>[]</td>
+      <td>1.700</td>
+    </tr>
+    <tr>
+      <th>9434</th>
+      <td>HCT</td>
+      <td>Hematocrit</td>
+      <td>38.1</td>
+      <td>%25</td>
+      <td>L/L</td>
+      <td>0.38</td>
+      <td>[]</td>
+      <td>0.381</td>
+    </tr>
+    <tr>
+      <th>9456</th>
+      <td>MG</td>
+      <td>Magnesium</td>
+      <td>1.6</td>
+      <td>meq/L</td>
+      <td>mmol/L</td>
+      <td>0.80</td>
+      <td>[]</td>
+      <td>1.600</td>
+    </tr>
+  </tbody>
+</table>
+<p>322 rows × 8 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">List</span> <span class="n">of</span> <span class="n">records</span> <span class="ow">in</span> <span class="n">which</span> <span class="n">UCUM</span> <span class="n">conversion</span> <span class="n">was</span> <span class="n">unable</span> <span class="n">to</span> <span class="n">perform</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">issue</span><span class="p">[(</span><span class="n">issue</span><span class="p">[</span><span class="s1">&#39;fromucmc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ucumfail</span><span class="o">=</span><span class="n">findings</span><span class="p">[(</span><span class="n">findings</span><span class="p">[</span><span class="s1">&#39;fromucum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())]</span>
-</pre></div>
+<div class="output_wrapper">
+<div class="output">
 
-    </div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>LBTESTCD</th>
+      <th>LBTEST</th>
+      <th>LBORRES</th>
+      <th>LBORRESU</th>
+      <th>LBSTRESU</th>
+      <th>LBSTRESN</th>
+      <th>ge</th>
+      <th>fromucmc</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>19</th>
+      <td>UREAN</td>
+      <td>Urea Nitrogen</td>
+      <td>12</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>4.21</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>CREAT</td>
+      <td>Creatinine</td>
+      <td>0.79</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>70.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>GLUC</td>
+      <td>Glucose</td>
+      <td>73</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>4.10</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>CA</td>
+      <td>Calcium</td>
+      <td>9.3</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>2.34</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>PHOS</td>
+      <td>Phosphate</td>
+      <td>3.7</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>1.20</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>BILI</td>
+      <td>Bilirubin</td>
+      <td>0.2</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>3.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>BILDIR</td>
+      <td>Direct Bilirubin</td>
+      <td>0.1</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>NaN</td>
+      <td>[&lt;]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>BILIND</td>
+      <td>Indirect Bilirubin</td>
+      <td>0.1</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>2.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>ALP</td>
+      <td>Alkaline Phosphatase</td>
+      <td>113</td>
+      <td>U/L</td>
+      <td>%5BIU%5D/L</td>
+      <td>113.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>URATE</td>
+      <td>Urate</td>
+      <td>3.8</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>226.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>T4FR</td>
+      <td>Thyroxine; Free</td>
+      <td>1.19</td>
+      <td>ng/dL</td>
+      <td>pmol/L</td>
+      <td>15.40</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>T3FR</td>
+      <td>Triiodothyronine; Free</td>
+      <td>3.14</td>
+      <td>pg/mL</td>
+      <td>pmol/L</td>
+      <td>4.80</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>OXYCDN</td>
+      <td>Oxycodone</td>
+      <td>NEGATIVE</td>
+      <td>ng/mL</td>
+      <td>ng/mL</td>
+      <td>NaN</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>78</th>
+      <td>UREAN</td>
+      <td>Urea Nitrogen</td>
+      <td>10</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>3.61</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>CREAT</td>
+      <td>Creatinine</td>
+      <td>0.63</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>56.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>GLUC</td>
+      <td>Glucose</td>
+      <td>65</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>3.60</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>CA</td>
+      <td>Calcium</td>
+      <td>9.6</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>2.39</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>PHOS</td>
+      <td>Phosphate</td>
+      <td>2.6</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>0.84</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>BILI</td>
+      <td>Bilirubin</td>
+      <td>0.2</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>3.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>87</th>
+      <td>BILDIR</td>
+      <td>Direct Bilirubin</td>
+      <td>0.1</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>NaN</td>
+      <td>[&lt;]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88</th>
+      <td>BILIND</td>
+      <td>Indirect Bilirubin</td>
+      <td>0.1</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>2.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>ALP</td>
+      <td>Alkaline Phosphatase</td>
+      <td>123</td>
+      <td>U/L</td>
+      <td>%5BIU%5D/L</td>
+      <td>123.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>URATE</td>
+      <td>Urate</td>
+      <td>3.0</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>178.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>T4FR</td>
+      <td>Thyroxine; Free</td>
+      <td>0.82</td>
+      <td>ng/dL</td>
+      <td>pmol/L</td>
+      <td>10.50</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>T3FR</td>
+      <td>Triiodothyronine; Free</td>
+      <td>2.59</td>
+      <td>pg/mL</td>
+      <td>pmol/L</td>
+      <td>4.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>127</th>
+      <td>UREAN</td>
+      <td>Urea Nitrogen</td>
+      <td>12</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>4.43</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>128</th>
+      <td>CREAT</td>
+      <td>Creatinine</td>
+      <td>0.77</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>68.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>129</th>
+      <td>GLUC</td>
+      <td>Glucose</td>
+      <td>115</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>6.40</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>130</th>
+      <td>CA</td>
+      <td>Calcium</td>
+      <td>9.0</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>2.26</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>131</th>
+      <td>PHOS</td>
+      <td>Phosphate</td>
+      <td>3.6</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>1.16</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9331</th>
+      <td>URATE</td>
+      <td>Urate</td>
+      <td>4.2</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>250.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9334</th>
+      <td>T4FR</td>
+      <td>Thyroxine; Free</td>
+      <td>1.37</td>
+      <td>ng/dL</td>
+      <td>pmol/L</td>
+      <td>17.60</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9335</th>
+      <td>T3FR</td>
+      <td>Triiodothyronine; Free</td>
+      <td>4.73</td>
+      <td>pg/mL</td>
+      <td>pmol/L</td>
+      <td>7.30</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9355</th>
+      <td>OXYCDN</td>
+      <td>Oxycodone</td>
+      <td>NEGATIVE</td>
+      <td>ng/mL</td>
+      <td>ng/mL</td>
+      <td>NaN</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9389</th>
+      <td>UREAN</td>
+      <td>Urea Nitrogen</td>
+      <td>7</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>2.61</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9390</th>
+      <td>CREAT</td>
+      <td>Creatinine</td>
+      <td>0.81</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>72.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9391</th>
+      <td>GLUC</td>
+      <td>Glucose</td>
+      <td>70</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>3.90</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9392</th>
+      <td>CA</td>
+      <td>Calcium</td>
+      <td>9.1</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>2.28</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9393</th>
+      <td>PHOS</td>
+      <td>Phosphate</td>
+      <td>2.5</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>0.81</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9397</th>
+      <td>BILI</td>
+      <td>Bilirubin</td>
+      <td>0.4</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>7.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9398</th>
+      <td>BILDIR</td>
+      <td>Direct Bilirubin</td>
+      <td>0.1</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>2.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9399</th>
+      <td>BILIND</td>
+      <td>Indirect Bilirubin</td>
+      <td>0.3</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>5.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9402</th>
+      <td>ALP</td>
+      <td>Alkaline Phosphatase</td>
+      <td>85</td>
+      <td>U/L</td>
+      <td>%5BIU%5D/L</td>
+      <td>85.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9403</th>
+      <td>URATE</td>
+      <td>Urate</td>
+      <td>3.3</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>196.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9407</th>
+      <td>T4FR</td>
+      <td>Thyroxine; Free</td>
+      <td>1.00</td>
+      <td>ng/dL</td>
+      <td>pmol/L</td>
+      <td>12.90</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9408</th>
+      <td>T3FR</td>
+      <td>Triiodothyronine; Free</td>
+      <td>3.29</td>
+      <td>pg/mL</td>
+      <td>pmol/L</td>
+      <td>5.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9429</th>
+      <td>OXYCDN</td>
+      <td>Oxycodone</td>
+      <td>NEGATIVE</td>
+      <td>ng/mL</td>
+      <td>ng/mL</td>
+      <td>NaN</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9451</th>
+      <td>UREAN</td>
+      <td>Urea Nitrogen</td>
+      <td>12</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>4.11</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9452</th>
+      <td>CREAT</td>
+      <td>Creatinine</td>
+      <td>0.74</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>65.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9453</th>
+      <td>GLUC</td>
+      <td>Glucose</td>
+      <td>87</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>4.80</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9454</th>
+      <td>CA</td>
+      <td>Calcium</td>
+      <td>9.8</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>2.44</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9455</th>
+      <td>PHOS</td>
+      <td>Phosphate</td>
+      <td>3.9</td>
+      <td>mg/dL</td>
+      <td>mmol/L</td>
+      <td>1.26</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9459</th>
+      <td>BILI</td>
+      <td>Bilirubin</td>
+      <td>0.2</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>3.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9460</th>
+      <td>BILDIR</td>
+      <td>Direct Bilirubin</td>
+      <td>0.1</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>NaN</td>
+      <td>[&lt;]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9461</th>
+      <td>BILIND</td>
+      <td>Indirect Bilirubin</td>
+      <td>0.1</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>2.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9464</th>
+      <td>ALP</td>
+      <td>Alkaline Phosphatase</td>
+      <td>70</td>
+      <td>U/L</td>
+      <td>%5BIU%5D/L</td>
+      <td>70.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9465</th>
+      <td>URATE</td>
+      <td>Urate</td>
+      <td>4.6</td>
+      <td>mg/dL</td>
+      <td>umol/L</td>
+      <td>274.00</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9469</th>
+      <td>T4FR</td>
+      <td>Thyroxine; Free</td>
+      <td>1.13</td>
+      <td>ng/dL</td>
+      <td>pmol/L</td>
+      <td>14.60</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9470</th>
+      <td>T3FR</td>
+      <td>Triiodothyronine; Free</td>
+      <td>3.12</td>
+      <td>pg/mL</td>
+      <td>pmol/L</td>
+      <td>4.80</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9489</th>
+      <td>OXYCDN</td>
+      <td>Oxycodone</td>
+      <td>NEGATIVE</td>
+      <td>ng/mL</td>
+      <td>ng/mL</td>
+      <td>NaN</td>
+      <td>[]</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>2142 rows × 8 columns</p>
 </div>
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
 
-    </div>
 </div>
 </div>
 
