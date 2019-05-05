@@ -27,5 +27,7 @@ Jozef Aerts [announced](http://www.xml4pharma.com/UCUM/Instructions_for_testing_
 
 Although CDISC released a downloadable [CDISC UNIT and UCUM mapping xlsx file](https://www.cdisc.org/standards/terminology), this evaluation will not use it since CDISC UNIT does not cover all reported units used by the clinical laboratory/bioanalytical/PK vendors. Regular expression along with UCUM unit validity service were used to convert and verify the units provided by the lab vendors.
 
-Initial evaluation was done on RestAPI available through [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the findings are summarized [here](usum_201902.ipynb).
-The second evaluation is completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). The findings will be summarized [here](ucum_201905-test-large-sample.ipynb).
+## 2. Findings
+
+1. Initial evaluation was done on RestAPI available through [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the findings are summarized [here](usum_201902.ipynb).
+2. The second evaluation is completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). The findings will be summarized [here](ucum_201905-test-large-sample.ipynb).
