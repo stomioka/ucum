@@ -1,18 +1,18 @@
 # Unified Code for Units of Measure (UCUM)
 Sam Tomioka
 
-This repository contains the evaluation results of the [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the [test version](http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf). A Python utility may be posted in the future.
+This repository contains the evaluation results of the [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the [test version](http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf). A Python utility file is stored in lib.
 
 
 ## 1. Background
 The verification of scientific units and conversion from the reported units to standard units have been always challenging for Data Science due to several reasons:
 
-    1. Need a lookup table that consists of all possible input and output units for measurements, name of the measurements (e.g. Glucose, Weight, ...), conversion factors, molar weights etc.
-    2. The names of the measurement in the lookup table and incoming data must match
-    3. The incoming units must be in the lookup table
-    4. Maintenance of the lookup table must be synched with standard terminology update
-    5. Require careful medical review in addition to laborsome Data Science review
-    and more...
+1. Need a lookup table that consists of all possible input and output units for measurements, name of the measurements (e.g. Glucose, Weight, ...), conversion factors, molar weights etc.
+2. The names of the measurement in the lookup table and incoming data must match
+3. The incoming units must be in the lookup table
+4. Maintenance of the lookup table must be synched with standard terminology update
+5. Require careful medical review in addition to laborsome Data Science review
+and more...
 
 Despite the challenges, the lookup table approach is norm for many companies for verification of the units and conversion. Consideration was give for more systematic approach that does not require to use the lab test names[1], but some units rely on molar weight and/or valence of ion of the specific lab tests, so this approach does not solve the problem. The regulatory agencies require sponsor to use standardized units for reporting and analysis[2]. The PMDA requires SI units for all reporting and analysis[3,4]. The differences in requirement force us to maintain region specific conversion for some measurements which add additional complexity.
 
@@ -30,4 +30,8 @@ Although CDISC released a downloadable [CDISC UNIT and UCUM mapping xlsx file](h
 ## 2. Findings
 
 1. Initial evaluation was done on RestAPI available through [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the findings are summarized [here](https://stomioka.github.io/ucum/docs/usum_201902.html).
+<<<<<<< HEAD
 2. The second evaluation is completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). The findings will be summarized [here](ucum_201905-test-large-sample.ipynb).
+=======
+2. The second evaluation is completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). The findings will be summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample.html).
+>>>>>>> gh-pages
