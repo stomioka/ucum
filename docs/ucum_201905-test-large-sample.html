@@ -13279,14 +13279,15 @@ There were 2022 records where the source and target unit do not have the same pr
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="2-2-2-Error-Messages-from-UCUM-Conversion">2-2-2 Error Messages from UCUM Conversion<a class="anchor-link" href="#2-2-2-Error-Messages-from-UCUM-Conversion">&#182;</a></h4><p>7389 records were returned with error messages from UCUM Conversion.</p>
+<h4 id="2-2-2-Error-Messages-from-UCUM-Conversion">2-2-2 Error Messages from UCUM Conversion<a class="anchor-link" href="#2-2-2-Error-Messages-from-UCUM-Conversion">&#182;</a></h4><p>7389 records were returned with error messages from UCUM Conversion as shown in the <strong>Figure 2</strong>. 
+<strong>Table 5</strong> summarizes the type of errors received.</p>
 <ul>
 <li>The most frequent error was <code>ERROR: invalid double for Molecular   Weight value = null</code> which turns out the be true positive finding. This is related to missing m.w. or LOINC when the conversion requires m.w..</li>
-<li>There were 9 kinds of <code>ERROR: No MW value for the LOINC code **xxxxxxx** is available or the LOINC code is invalid</code> as shown in the <strong>Figure 2</strong>. One of the error was due to invalid LOINC code <code>15153-0</code>, but the rest of errors appear to be due to missing m.w. in the LOINC database. It would be helpful if this error message is split into each condition (1. invalid LOINC code or missing MW in LOINC) for our verification purpose. </li>
-<li>Creatinine Clearance (mL/min/1.73 m2) conversion failed due to message <code>ERROR: number of annotations in source   and target is different</code>. The surface area 1.73 m2 was added as annotation for the source but the target did not include the same annotation. This call would solve the issue.
+<li>There were 9 kinds of <code>ERROR: No MW value for the LOINC code **xxxxxxx** is available or the LOINC code is invalid</code> . One of the error was due to invalid LOINC code <code>15153-0</code>, but the rest of errors appear to be due to missing m.w. in the LOINC database. It would be helpful if this error message is split into each condition (1. invalid LOINC code or missing MW in LOINC) for our verification purpose. </li>
+<li>Creatinine Clearance (mL/min/1.73 m2) conversion failed with <code>ERROR: number of annotations in source   and target is different</code>. The surface area 1.73 m2 was added as annotation for the source but the target did not include the same annotation. This will be solve with
 <a href="http://xml4pharmaserver.com:8080/UCUMService2/rest/ucumtransform/121/from/mL/min/%7B1.73_m2%7D/to/mL/s/%7B1.73_m2%7D">http://xml4pharmaserver.com:8080/UCUMService2/rest/ucumtransform/121/from/mL/min/%7B1.73_m2%7D/to/mL/s/%7B1.73_m2%7D</a></li>
+<li>Several conversions failed with <code>ERROR: unexpected result: Error: Source and Target unit do not seem to belong to the same property</code>. See Table 6 for more detail.</li>
 </ul>
-<p><strong>Table 5</strong> summarizes the type of errors received.</p>
 <p><img src="images/errmsg-lg-data.png" alt=""></p>
 <center><b>Figure 2: Error Messages by LBTESTCD</b></center><center><b>Table 5: Summary of Error Messages</b></center><table>
 <thead><tr>
@@ -14014,10 +14015,10 @@ Removed records do not require conversion:  (172205, 7)
 
  
  
-<div id="95f5daad-dc7a-4604-bbb9-b1464dd54b8c"></div>
+<div id="3604698b-2eca-4ab4-b4b6-035a60e49aa5"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#95f5daad-dc7a-4604-bbb9-b1464dd54b8c');
+var element = $('#3604698b-2eca-4ab4-b4b6-035a60e49aa5');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "61da2cd9e9b24cb6b53cfd5c22dafed5", "version_major": 2, "version_minor": 0}
