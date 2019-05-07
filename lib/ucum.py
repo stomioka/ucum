@@ -19,27 +19,13 @@ from bokeh.plotting import figure, show, output_file
 
 
 import random
-def RGB_to_hex(RGB):
-  ''' [255,255,255] -> "#FFFFFF" '''
-  # Components need to be integers for hex to make sense
-  RGB = [int(x) for x in RGB]
-  return "#"+"".join(["0{0:x}".format(v) if v < 16 else
-                "{0:x}".format(v) for v in RGB]) 
-def colors(n):
-  ret = []
-  r = int(random.random() * 256)
-  g = int(random.random() * 256)
-  b = int(random.random() * 256)
-  step = 256 / n
-  for i in range(n):
-    r += step
-    g += step
-    b += step
-    r = int(r) % 256
-    g = int(g) % 256
-    b = int(b) % 256
-    ret.append(RGB_to_hex([r,b,g]))
-  return ret
+def Color(n):
+    c_=[]
+    for i in range(n):
+        r = lambda: random.randint(0,255)
+        c='#%02X%02X%02X' % (r(),r(),r())
+        c_.append(c)
+    return c_
 
 def bar_hm(df,title):
     sns.set(style="white")
@@ -170,6 +156,23 @@ def convert_unit(dfin, url, patterns, loinconly=0):
     rawdata=df3['LBSTRESN'].tolist()
     df3['fromucum']=fromucmc
     df3=df3.drop(columns=['incl'])
+    df3.reset_index(drop=True, inplace=True)
     df3['response']=pd.DataFrame(response).iloc[:,4]
     check=[i!=j for i, j in zip(fromucmc, rawdata)]
     return df3[check],df3,response
+
+def sumstat(test, findings, originaldf, findingspiv):
+    check=originaldf[originaldf['LBTESTCD']==test]
+    print(test+': Summary stats of LBSTRESN')
+    print()
+    print(check[['LBSTRESN','LBSTRESU']].groupby(['LBSTRESU']).describe())
+    check=findings[findings['LBTESTCD']==test]
+    print('--------------------------------------------------------------')
+    print(test+': Summary stats of UCUM Conversion')
+    print()
+    print(check[['fromucum','LBSTRESU']].groupby(['LBSTRESU']).describe())
+    print('--------------------------------------------------------------')
+    print(test+': Summary stats of Differences between LBSTRESN and UCUM Conversion')
+    print()
+    print(findingspiv[test].describe())
+    return check
