@@ -13236,8 +13236,7 @@ There were 2022 records where the source and target unit do not have the same pr
 </tr>
 </tbody>
 </table>
-<p><br></p>
-<center><b>Note: *Dropped duplicates except for the first occurrence.</b></center>
+<center>Note: *Dropped duplicates except for the first occurrence.</center>
 </div>
 </div>
 </div>
@@ -13245,9 +13244,9 @@ There were 2022 records where the source and target unit do not have the same pr
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="2-2-1-Conversion-Results">2-2-1 Conversion Results<a class="anchor-link" href="#2-2-1-Conversion-Results">&#182;</a></h4><p>There were <strong>2620</strong> records from <strong>27</strong> tests where the LBSTRESN and UCUM conversion results did not match. Observed differences are plotted in <strong>Section 4-1</strong>.</p>
-<p>Out of <strong>27, 2</strong> tests had true positive findings. The left light colored bars show the LBSTRESN, and the right dark colored bars show the difference between LBSTRESN and the returned value from UCUM conversion. The figures of all <strong>27</strong> tests were provided in <strong>Section 4-1</strong>.
-<img src="images/diff-distribution-lg-data3.png" alt=""></p>
-<center><b>Figure 1: LBSTRESN and Difference between LBSTRESN and Return Value of UCUM Conversion</b></center><p>Below <strong>Table 4</strong> summarizes the findings on these three tests.</p>
+<p>Out of 27 tests,PHOS, TSH, and MG had a large difference between the LBSTRESN and UCUM conversion. PHOS (n=72) and TSH (n=139) had true positive findings. One test, MG (n=20), had false positive findings. In <strong>Figure 1</strong>, the left light colored bars show the LBSTRESN, and the right dark colored bars show the difference between LBSTRESN and the returned value from UCUM conversion. The details are discussed in Sec 4-1, but the <strong>Table 4</strong> summarizes the findings on these 3 tests.</p>
+<p><img src="images/diff-distribution-lg-data3.png" alt=""></p>
+<center><b>Figure 1: LBSTRESN and Difference between LBSTRESN and Return Value of UCUM Conversion</b></center><p><br><br><br></p>
 <center><b>Table 4: Findings from the UCUM Conversion</b></center><table>
 <thead><tr>
 <th>LBTESTCD</th>
@@ -13280,10 +13279,16 @@ There were 2022 records where the source and target unit do not have the same pr
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="2-2-2-Error-Messages-from-UCUM-Conversion">2-2-2 Error Messages from UCUM Conversion<a class="anchor-link" href="#2-2-2-Error-Messages-from-UCUM-Conversion">&#182;</a></h4><p>7389 records were returned with error messages from UCUM Conversion. Most frequent error was 'ERROR: No MW value for the LOINC code <strong>xxxxxxx</strong> is available or the LOINC code is invalid'. It would be helpful if this error message is split into each condition (1. invalid LOINC code or missing MW in LOINC) for our verification purpose.</p>
+<h4 id="2-2-2-Error-Messages-from-UCUM-Conversion">2-2-2 Error Messages from UCUM Conversion<a class="anchor-link" href="#2-2-2-Error-Messages-from-UCUM-Conversion">&#182;</a></h4><p>7389 records were returned with error messages from UCUM Conversion.</p>
+<ul>
+<li>The most frequent error was <code>ERROR: invalid double for Molecular   Weight value = null</code> which turns out the be true positive finding. This is related to missing m.w. or LOINC when the conversion requires m.w..</li>
+<li>There were 9 kinds of <code>ERROR: No MW value for the LOINC code **xxxxxxx** is available or the LOINC code is invalid</code> as shown in the <strong>Figure 2</strong>. One of the error was due to invalid LOINC code <code>15153-0</code>, but the rest of errors appear to be due to missing m.w. in the LOINC database. It would be helpful if this error message is split into each condition (1. invalid LOINC code or missing MW in LOINC) for our verification purpose. </li>
+<li>Creatinine Clearance (mL/min/1.73 m2) conversion failed due to message <code>ERROR: number of annotations in source   and target is different</code>. The surface area 1.73 m2 was added as annotation for the source but the target did not include the same annotation. This call would solve the issue.
+<a href="http://xml4pharmaserver.com:8080/UCUMService2/rest/ucumtransform/121/from/mL/min/%7B1.73_m2%7D/to/mL/s/%7B1.73_m2%7D">http://xml4pharmaserver.com:8080/UCUMService2/rest/ucumtransform/121/from/mL/min/%7B1.73_m2%7D/to/mL/s/%7B1.73_m2%7D</a></li>
+</ul>
+<p><strong>Table 5</strong> summarizes the type of errors received.</p>
 <p><img src="images/errmsg-lg-data.png" alt=""></p>
-<center><b>Figure 2: Error Messages by LBTESTCD</b></center><p>Below <strong>Table 5</strong> summarizes the type of errors received.</p>
-<center><b>Table 5: Summary of Error Messages</b></center><table>
+<center><b>Figure 2: Error Messages by LBTESTCD</b></center><center><b>Table 5: Summary of Error Messages</b></center><table>
 <thead><tr>
 <th>Message</th>
 <th>My Note</th>
@@ -14009,10 +14014,10 @@ Removed records do not require conversion:  (172205, 7)
 
  
  
-<div id="8bf668b0-8b06-4258-8e4b-0c88a87b36b7"></div>
+<div id="95f5daad-dc7a-4604-bbb9-b1464dd54b8c"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#8bf668b0-8b06-4258-8e4b-0c88a87b36b7');
+var element = $('#95f5daad-dc7a-4604-bbb9-b1464dd54b8c');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "61da2cd9e9b24cb6b53cfd5c22dafed5", "version_major": 2, "version_minor": 0}
