@@ -13245,7 +13245,7 @@ There were 2022 records where the source and target unit do not have the same pr
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="2-2-1-Conversion-Results">2-2-1 Conversion Results<a class="anchor-link" href="#2-2-1-Conversion-Results">&#182;</a></h4><p>There were <strong>2620</strong> records from <strong>27</strong> tests where the LBSTRESN and UCUM conversion results did not match. Observed differences are plotted in <strong>Section 4-1</strong>.</p>
-<p>Out of <strong>27, 2</strong> tests had true positive findings. The left light colored bars show the LBSTRESN, and the right dark colored bars show the difference between LBSTRESN and the returned value from UCUM conversion. The figures of all <strong>27</strong> tests were provided in <strong>Section 4-1</strong>.
+<p>Out of <strong>27, 3</strong> tests had true positive findings. The left light colored bars show the LBSTRESN, and the right dark colored bars show the difference between LBSTRESN and the returned value from UCUM conversion. The figures of all <strong>27</strong> tests were provided in <strong>Section 4-1</strong>.
 <img src="images/diff-distribution-lg-data3.png" alt=""></p>
 <center><b>Figure 1: LBSTRESN and Difference between LBSTRESN and Return Value of UCUM Conversion</b></center><p>Below <strong>Table 4</strong> summarizes the findings on these three tests.</p>
 <center><b>Table 4: Findings from the UCUM Conversion</b></center><table>
