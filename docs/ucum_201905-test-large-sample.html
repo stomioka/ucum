@@ -13118,22 +13118,21 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Evaluation-of-the-RESTful-API-for-molar-to-mass-concentration-conversion-using-UCUM-and-LOINC">Evaluation of the RESTful API for molar to mass concentration conversion using UCUM and LOINC<a class="anchor-link" href="#Evaluation-of-the-RESTful-API-for-molar-to-mass-concentration-conversion-using-UCUM-and-LOINC">&#182;</a></h1><p><strong>Sam Tomioka</strong></p>
 <p><strong>May 5, 2019</strong></p>
-<h2 id="1-Introduction">1 Introduction<a class="anchor-link" href="#1-Introduction">&#182;</a></h2><p>The verification of scientific units and conversion from the reported units to standard units have been always challenging for Data Science due to several reasons:</p>
-
-<pre><code>1. Need a lookup table that consists of all possible input and output units for measurements, name of the measurements (e.g. Glucose, Weight, ...), conversion factors, molar weights etc.
-2. The names of the measurement in the lookup table and incoming data must match
-3. The incoming units must be in the lookup table
-4. Maintenance of the lookup table must be synched with standard terminology update
-5. Require careful medical review in addition to laborsome Data Science review
-and more...
-
-</code></pre>
-<p>Despite the challenges, the lookup table approach is norm for many companies for verification of the units and conversion. Consideration was give for more systematic approach that does not require to use the lab test names[1], but some units rely on molar weight and/or valence of ion of the specific lab tests, so this approach does not solve the problem. The regulatory agencies require sponsor to use standardized units for reporting and analysis[2]. The PMDA requires SI units for all reporting and analysis[3,4]. The differences in requirement force us to maintain region specific conversion for some measurements which add additional complexity.</p>
-<p>The approach Jozef Aerts discussed uses RestAPI available through <a href="https://ucum.nlm.nih.gov/ucum-lhc/index.html">Unified Code for Units of Measure (UCUM) Resources</a> which is maintained by the US National Library of Medicine[5]. The benefit is obvious that we can potentially eliminate the maintenance of the lab conversion lookup table. Here is what they say about themself.</p>
+<h2 id="1.-Intruduction">1. Intruduction<a class="anchor-link" href="#1.-Intruduction">&#182;</a></h2><p>The verification of scientific units and conversion from the reported units to standard units have been always challenging for Data Science due to several reasons:</p>
+<ol>
+<li>Need a lookup table that consists of all possible input and output units for measurements, name of the measurements (e.g. Glucose, Weight, ...), conversion factors, molar weights etc.</li>
+<li>The names of the measurement in the lookup table and incoming data must match</li>
+<li>The incoming units must be in the lookup table</li>
+<li>Maintenance of the lookup table must be synched with standard terminology update</li>
+<li>Require careful medical review in addition to laborsome Data Science review
+and more...</li>
+</ol>
+<p>Despite the challenges, the lookup table approach is the norm for many companies for verification of the units and conversion. Consideration was given for more systematic approach that does not require to use the lab test names[1], but some units rely on molar weight and/or valence of ion of the specific lab tests, so this approach does not solve the problem. The regulatory agencies require the sponsor to use standardized units for reporting and analysis[2]. The PMDA requires SI units for all reporting and analysis[3,4]. The differences in requirement force us to maintain region specific conversion for some measurements which add additional complexity.</p>
+<p>The approach Jozef Aerts discussed uses RestAPI available through <a href="https://ucum.nlm.nih.gov/ucum-lhc/index.html">Unified Code for Units of Measure (UCUM) Resources</a> which is maintained by the US National Library of Medicine (NLM)[5]. The benefit is obvious that we can potentially eliminate the maintenance of the lab conversion lookup table. Here is what they say about themselves.</p>
 <blockquote><p>The Unified Code for Units of Measure (UCUM) is a code system intended to include all units of measures being contemporarily used in international science, engineering, and business. The purpose is to facilitate unambiguous electronic communication of quantities together with their units. The focus is on electronic communication, as opposed to communication between humans. A typical application of The Unified Code for Units of Measure are electronic data interchange (EDI) protocols, but there is nothing that prevents it from being used in other types of machine communication.</p>
 </blockquote>
-<p>The UCUM is the ISO 11240 compliant standard and has been used in ICSR E2B submissions for regulators adopted ICH E2B(R3). <a href="https://www.fda.gov/industry/fda-resources-data-standards/units-measurement">FDA requires the UCUM codes</a> for the <a href="https://www.fda.gov/media/98617/download">eVAERS ICSR E2B (R3) submissions</a>, <a href="https://www.fda.gov/industry/fda-resources-data-standards/structured-product-labeling-resources">dosage strength in both content of product labeling</a> and <a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/providing-regulatory-submissions-electronic-format-drug-establishment-registration-and-drug-listing">Drug Establishment Registration and Drug Listing</a>.</p>
-<h3 id="1-1-Intoduction-for-mol-mass/mass-mol-conversion">1-1 Intoduction for mol-mass/mass-mol conversion<a class="anchor-link" href="#1-1-Intoduction-for-mol-mass/mass-mol-conversion">&#182;</a></h3><p>Jozef Aerts <a href="http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf">announced</a> an updated RESTful API which accounts for the molecular weights of the analyte into the conversion between molar and mass concentrations. This additional functionality would facilitate the conversion of the lab results, verification of the standardized lab results and LOINC code provided by the vendors.</p>
+<p>The UCUM is the ISO 11240 compliant standard and has been used in ICSR E2B submissions for regulators adopted ICH E2B(R3). <a href="https://www.fda.gov/industry/fda-resources-data-standards/units-measurement">FDA requires the UCUM codes</a> for the <a href="https://www.fda.gov/media/98617/download">eVAERS ICSR E2B (R3) submissions</a>, <a href="https://www.fda.gov/industry/fda-resources-data-standards/structured-product-labeling-resources">dosage strength in both content of product labeling</a> and <a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/providing-regulatory-submissions-electronic-format-drug-establishment-registration-and-drug-listing">Drug Establishment Registration and Drug Listing</a>. UCUM codes have been adopted by HL7 <a href="https://www.hl7.org/fhir/terminologies-systems.html">FHIR</a>.</p>
+<h3 id="1-1-Introduction-for-mol-mass/mass-mol-conversion">1-1 Introduction for mol-mass/mass-mol conversion<a class="anchor-link" href="#1-1-Introduction-for-mol-mass/mass-mol-conversion">&#182;</a></h3><p>Jozef Aerts <a href="http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf">announced</a> an updated RESTful API which accounts for the molecular weights of the analyte into the conversion between molar and mass concentrations. This additional functionality would facilitate the conversion of the lab results, verification of the standardized lab results and LOINC code provided by the vendors.</p>
 <p>Although CDISC released a downloadable <a href="https://www.cdisc.org/standards/terminology">CDISC UNIT and UCUM mapping xlsx file</a>, this evaluation will not use it since the CDISC UNIT does not cover all reported units used by the clinical laboratory/bioanalytical/PK vendors. Regular expression along with UCUM unit validity service was used to convert and verify the units provided by the lab vendors. In the future, this will be done with encoder-decoder or transformer + sequence-to-sequence model which demonstrated near perfect to generate iso 8601 from numerous date formats.</p>
 <p>An initial evaluation was done on RestAPI available through the <a href="https://ucum.nlm.nih.gov/ucum-lhc/index.html">Unified Code for Units of Measure (UCUM) Resources</a> and the findings are summarized in 2-1. The second evaluation is completed on the test version of RestAPI provided by Jozef Aerts at <a href="http://www.xml4pharma.com/">xml4pharma</a></p>
 
@@ -14032,10 +14031,10 @@ Removed records do not require conversion:  (172205, 7)
 
  
  
-<div id="aa51fb60-23fe-4e2c-83ec-6ba4f047861d"></div>
+<div id="da68a0ad-1b32-43a7-a17c-c5d799654a5a"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#aa51fb60-23fe-4e2c-83ec-6ba4f047861d');
+var element = $('#da68a0ad-1b32-43a7-a17c-c5d799654a5a');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "61da2cd9e9b24cb6b53cfd5c22dafed5", "version_major": 2, "version_minor": 0}
