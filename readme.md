@@ -31,3 +31,19 @@ Although CDISC released a downloadable [CDISC UNIT and UCUM mapping xlsx file](h
 
 1. The initial evaluation was done on RestAPI available through [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the findings are summarized [here](https://stomioka.github.io/ucum/docs/usum_201902.html).
 2. The second evaluation is completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). The findings are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample.html).
+3. The third evaluation is completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). Several improvements were implemented since the second evaluation was completed.
+* The return message contains the MW that was used for the conversion.
+
+  ![](docs/images/newmsg.png)
+
+* Previously, there was one kind of error message related to LOINC. For example,
+>Error message "ERROR: No MW value for the LOINC code xxx-x is available or the LOINC code is invalid"
+
+The updated service returns LOINC related error message either
+  1. Invalid LOINC code XXXX
+  2. No MW found for LOINC Part Number LPxxxx for LOINC code yyyy<br>
+    This updates allow us to investigate issues without browsing LOINC.
+
+* The list of MW for the LOINC-component-part  was extended
+
+The findings are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).
