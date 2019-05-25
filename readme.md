@@ -44,6 +44,6 @@ The updated service returns LOINC related error message either
   2. No MW found for LOINC Part Number LPxxxx for LOINC code yyyy<br>
     This updates allow us to investigate issues without browsing LOINC.
 
-* The list of MW for the LOINC-component-part  was extended
+* The list of MW for the LOINC-component-part  was extended.
 
-The findings are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).
+The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).
