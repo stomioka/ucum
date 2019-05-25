@@ -47,3 +47,73 @@ The updated service returns LOINC related error message either
 * The list of MW for the LOINC-component-part  was extended.
 
 The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).
+
+
+## 3. Some useful utilities
+
+### Apply regular expression to LBORRESU and LBSTRESU
+`orresu2ucum(df_,patterns)`
+This will take datafram containing `LBORRESU` and `LBSTRESU`, and regular expression you want to pass to make UCUM units. It returns the dataframe with converted units, and the list of converted units.
+
+Example:
+```python
+patterns = [("%","%25"),
+           ("\A[xX]?10[^E]", "10*"),
+           ("IU", "%5BIU%5D"),
+           ("\Anan", ""),
+           ("\ANONE", ""),
+           ("\A[rR][Aa][Tt][Ii][Oo]", ""),
+           ("\ApH", ""),
+           ("Eq[l]?","eq"),
+           ("\ATI/L","TR/L"),#update T to TR
+           ("\AGI/L","GA/L"),#update G to GA
+           ("V/V","L/L"),
+           ("[a-z]{0,4}/HPF","/%5BHPF%5D"),
+           ("[a-z]{0,4}/LPF","/%5BLPF%5D"),
+           ("fraction of 1","1"),
+            ("sec","s"),
+            ("1.73m2","%7B1.73_m2%7D"),
+            ("\AG/L","GA/L")
+           ]
+
+dfconverted, ucumlist=orresu2ucum(df1,patterns)
+```
+
+### Verify units using UCUM service
+
+`ucumVerify(ucumlist,url)`
+
+Example:
+```python
+url='http://xml4pharmaserver.com:8080/UCUMService2/rest'
+#url=https://ucum.nlm.nih.gov/ucum-service/v1/
+ucumVerify(ucumlist, url)
+```
+Output:
+```output
+['g/dL = true',
+ 'mg/dL = true',
+ 'ng/mL = true',
+ '10*3/uL = true',
+ '%25 = true',
+ '10*6/uL = true',
+ '10*3/mm3 = true',
+ 'meq/L = true',
+ 'mL/min = true',
+ 'ng/L = true',
+ 'ng/dL = true',
+ 'u%5BIU%5D/mL = true',
+```
+
+### Convert results in LBORRESU to results in LBSTRESU
+
+`convert_unit()`
+
+Example:
+```python
+findings,full,response=convert_unit(nodupdf, url, patterns,loinconly=0)
+
+findings[(findings['fromucum'].notnull())]
+```
+Output:
+![](images/readme-a40b65a9.png)
