@@ -116,7 +116,7 @@ findings[(findings['fromucum'].notnull())]
 Output:
 ![](images/readme-a40b65a9.png)
 
-To see other utilities, please go to examples from [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html)
+To see other utilities, please go to examples from [here](https://stomioka.github.io/ucum/docs/ucum_20190526-test-large-sample.html)
 
 
 
@@ -142,4 +142,4 @@ To see other utilities, please go to examples from [here](https://stomioka.githu
 
     - The list of MW for the LOINC-component-part  was extended.
 
-  The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).
+  The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_20190526-test-large-sample.html).
