@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyucum
-Version: 0.0.5
+Version: 0.0.6
 Summary: Python library for using UCUM APIs to verify CDISC LB and ADLB
 Home-page: https://github.com/stomioka/sdtm_mapper
 Author: Sam Tomioka
@@ -37,8 +37,12 @@ Description: # pyucum
         ```
         Following packages are required
         
-        'numpy','pandas','tqdm ','urllib','xml','seaborn ','sklearn','matplotlib', 'bokeh'
-        
+        - **numpy**
+        - **pandas**
+        - **tqdm**
+        - **urllib**
+        - **seaborn**
+        - **matplotlib**
         
         ## 3. Some useful utilities
         
@@ -124,7 +128,7 @@ Description: # pyucum
         Output:
         ![](images/readme-a40b65a9.png)
         
-        To see other utilities, please go to examples from [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html)
+        To see other utilities, please go to examples from [here](https://stomioka.github.io/ucum/docs/ucum_20190526-test-large-sample.html)
         
         
         
@@ -150,7 +154,7 @@ Description: # pyucum
         
             - The list of MW for the LOINC-component-part  was extended.
         
-          The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).
+          The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_20190526-test-large-sample.html).
         
 Keywords: SDTM,ADaM,LB,ADLB,UCUM
 Platform: UNKNOWN

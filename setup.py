@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyucum",
-    version="0.0.5",
+    version="0.0.6",
     author="Sam Tomioka",
     author_email="stomioka@gmail.com",
     description="Python library for using UCUM APIs to verify CDISC LB and ADLB",
@@ -14,7 +14,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     license='LICENSE',
     include_package_data=True,
-    install_requires=['numpy','pandas','tqdm ','urllib','seaborn ','sklearn','matplotlib', 'bokeh'],
+    install_requires=['numpy','pandas','tqdm ','urllib','seaborn ','sklearn','matplotlib'],
     url='https://github.com/stomioka/sdtm_mapper',
     packages=setuptools.find_packages(),
     classifiers=[
