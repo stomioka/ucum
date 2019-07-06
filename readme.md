@@ -1,8 +1,7 @@
-# Unified Code for Units of Measure (UCUM)
+# pyucum
 Sam Tomioka
 
-This repository contains the evaluation results of the [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the [test version](http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf).
-
+**pyucum** can be used to generate UCUM units from `LBORRESU` and `LBSTRESU`, verify UCUM units, and convert results in `LBORRESU` to results in `LBSTRESU` using UCUM API. It is updated to work with given **LOINC value** to identify proper molecular weight used in the result conversion on molar based units. This tool works well with **CDISC SDTM.LB** and **ADaM.ADLB**.
 
 ## 1. Background
 The verification of scientific units and conversion from the reported units to standard units have been always challenging for Data Science due to several reasons:
@@ -22,41 +21,29 @@ The approach Jozef Aerts discussed uses RestAPI available through [Unified Code 
 
 The UCUM is the ISO 11240 compliant standard and has been used in ICSR E2B submissions for regulators adopted ICH E2B(R3). [FDA requires the UCUM codes](https://www.fda.gov/industry/fda-resources-data-standards/units-measurement) for the [eVAERS ICSR E2B (R3) submissions](https://www.fda.gov/media/98617/download), [dosage strength in both content of product labeling](https://www.fda.gov/industry/fda-resources-data-standards/structured-product-labeling-resources) and [Drug Establishment Registration and Drug Listing](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/providing-regulatory-submissions-electronic-format-drug-establishment-registration-and-drug-listing). UCUM codes have been adopted by HL7 [FHIR](https://www.hl7.org/fhir/terminologies-systems.html).
 
-### 1-1 Update May 2019
-Jozef Aerts [announced](http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf) an updated RESTful API which accounts for the molecular weights of the analyte into the conversion between molar and mass concentrations. This additional functionality would facilitate the conversion of the lab results, verification of the standardized lab results and LOINC code provided by the vendors.
+## 2. Installation
 
-Although CDISC released a downloadable [CDISC UNIT and UCUM mapping xlsx file](https://www.cdisc.org/standards/terminology), this evaluation will not use it since CDISC UNIT does not cover all reported units used by the clinical laboratory/bioanalytical/PK vendors. Regular expression along with UCUM unit validity service was used to convert and verify the units provided by the lab vendors before using conversion RestAPI.
+To install,
+```
+pip install pyucum
+```
+Following packages are required
 
-## 2. Findings
-
-1. **The initial evaluation** (2019-02-20) was done on RestAPI available through [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the findings are summarized [here](https://stomioka.github.io/ucum/docs/usum_201902.html).
-2. **The second evaluation** (2019-05-05) was completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). The findings are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample.html).
-3. **The third evaluation**  (2019-05-25) was completed on the updated test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). Several improvements were implemented since the second evaluation was completed.
-    - The return message contains the MW that was used for the conversion.
-
-    ![](docs/images/newmsg.png)
-
-    - Previously, there was one kind of error message related to LOINC. For example,
-      >Error message "ERROR: No MW value for the LOINC code xxx-x is available or the LOINC code is invalid"
-
-      The updated service returns LOINC related error message either
-        1. Invalid LOINC code XXXX
-        2. No MW found for LOINC Part Number LPxxxx for LOINC code yyyy<br>
-          This updates allow us to investigate issues without browsing LOINC.
-
-    - The list of MW for the LOINC-component-part  was extended.
-
-  The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).
+'numpy','pandas','tqdm ','urllib','xml','seaborn ','sklearn','matplotlib', 'bokeh'
 
 
 ## 3. Some useful utilities
 
-### Apply regular expression to LBORRESU and LBSTRESU
+### 3.1.  Apply regular expression to LBORRESU and LBSTRESU
 `orresu2ucum(df_,patterns)`
 This will take datafram containing `LBORRESU` and `LBSTRESU`, and regular expression you want to pass to make UCUM units. It returns the dataframe with converted units, and the list of converted units.
 
+Although CDISC released a downloadable [CDISC UNIT and UCUM mapping xlsx file](https://www.cdisc.org/standards/terminology), this tool will not use it since CDISC UNIT does not cover all reported units used by the clinical laboratory/bioanalytical/PK vendors. Regular expression along with UCUM unit validity service was used to convert and verify the units provided by the lab vendors before using conversion RestAPI.
+
 Example:
 ```python
+from pyucum import *
+
 patterns = [("%","%25"),
            ("\A[xX]?10[^E]", "10*"),
            ("IU", "%5BIU%5D"),
@@ -79,12 +66,21 @@ patterns = [("%","%25"),
 dfconverted, ucumlist=orresu2ucum(df1,patterns)
 ```
 
-### Verify units using UCUM service
+### 3.2. Verify units using UCUM service
 
 `ucumVerify(ucumlist,url)`
 
+- `ucumlist` is the list of UCUM units (not CDISC SDTM CT UNIT!) to be verified
+- `url` is for API services.
+
+  - Currently, https://ucum.nlm.nih.gov/ucum-service/v1/ from [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html)  does not provide LOINC based result conversion services.
+  - If LOINC based conversion is required, use http://xml4pharmaserver.com:8080/UCUMService2/rest from [xml4pharma](http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf)
+
+
 Example:
 ```python
+from pyucum import *
+
 url='http://xml4pharmaserver.com:8080/UCUMService2/rest'
 #url=https://ucum.nlm.nih.gov/ucum-service/v1/
 ucumVerify(ucumlist, url)
@@ -105,15 +101,45 @@ Output:
  'u%5BIU%5D/mL = true',
 ```
 
-### Convert results in LBORRESU to results in LBSTRESU
+### 3.3. Convert results in LBORRESU to results in LBSTRESU
 
 `convert_unit()`
 
 Example:
 ```python
+from pyucum import *
+
 findings,full,response=convert_unit(nodupdf, url, patterns,loinconly=0)
 
 findings[(findings['fromucum'].notnull())]
 ```
 Output:
 ![](images/readme-a40b65a9.png)
+
+To see other utilities, please go to examples from [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html)
+
+
+
+## 3. Verification of UCUM and XML4Pharma API services
+
+
+1. **The initial evaluation** (2019-02-20) was done on RestAPI available through [Unified Code for Units of Measure (UCUM) Resources](https://ucum.nlm.nih.gov/ucum-lhc/index.html) and the findings are summarized [here](https://stomioka.github.io/ucum/docs/usum_201902.html).
+2. **The second evaluation** (2019-05-05) was completed on the test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). The findings are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample.html).
+
+3. **The third evaluation**  (2019-05-25) was completed on the updated test version of RestAPI provided by Jozef Aerts at [xml4pharma](http://www.xml4pharma.com/). Several improvements were implemented by [Jozef Aerts](http://www.xml4pharma.com/UCUM/Instructions_for_testing_the_RESTful_web_service_for_molar_mass_unit_conversions.pdf)  since the second evaluation was completed.
+    - It accounts for the molecular weights of the analyte into the conversion between molar and mass concentrations to facilitate the conversion of the lab results, verification of the standardized lab results and LOINC code provided by the vendors.
+    - The return message contains the MW that was used for the conversion.
+
+    ![](docs/images/newmsg.png)
+
+    - Previously, there was one kind of error message related to LOINC. For example,
+      >Error message "ERROR: No MW value for the LOINC code xxx-x is available or the LOINC code is invalid"
+
+      The updated service returns LOINC related error message either
+        1. Invalid LOINC code XXXX
+        2. No MW found for LOINC Part Number LPxxxx for LOINC code yyyy<br>
+          This updates allow us to investigate issues without browsing LOINC.
+
+    - The list of MW for the LOINC-component-part  was extended.
+
+  The findings from the third evaluation are summarized [here](https://stomioka.github.io/ucum/docs/ucum_201905-test-large-sample-update.html).

@@ -1,0 +1,10 @@
+setup.py
+lib/__init__.py
+lib/ucum.py
+pyucum/__init__.py
+pyucum/ucum.py
+pyucum.egg-info/PKG-INFO
+pyucum.egg-info/SOURCES.txt
+pyucum.egg-info/dependency_links.txt
+pyucum.egg-info/requires.txt
+pyucum.egg-info/top_level.txt

@@ -1,0 +1,9 @@
+numpy
+pandas
+tqdm
+urllib
+xml
+seaborn
+sklearn
+matplotlib
+bokeh
