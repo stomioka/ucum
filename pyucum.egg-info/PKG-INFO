@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: pyucum
-Version: 0.1.0
-Summary: Python library for using UCUM APIs to verify CDISC LB and ADLB
+Version: 0.1.2
+Summary: Python library for using UCUM APIs to verify CDISC SDTM.LB and ADaM.ADLB
 Home-page: https://github.com/stomioka/ucum
 Author: Sam Tomioka
 Author-email: stomioka@gmail.com
@@ -37,11 +37,11 @@ Description: # pyucum
         ```
         Following packages are required
         
-        - **numpy**
-        - **pandas**
-        - **tqdm**
-        - **seaborn**
-        - **matplotlib**
+        - **numpy>=1.15.0**
+        - **pandas>=0.23.0**
+        - **tqdm>=4.32.2**
+        - **seaborn>=0.9.0**
+        - **matplotlib>=3.1.1**
         
         ## 3. Some useful utilities
         
@@ -157,6 +157,10 @@ Description: # pyucum
         
 Keywords: SDTM,ADaM,LB,ADLB,UCUM
 Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
 Classifier: Programming Language :: Python :: 3.6
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Natural Language :: English

@@ -29,11 +29,11 @@ pip install pyucum
 ```
 Following packages are required
 
-- **numpy**
-- **pandas**
-- **tqdm**
-- **seaborn**
-- **matplotlib**
+- **numpy>=1.15.0**
+- **pandas>=0.23.0**
+- **tqdm>=4.32.2**
+- **seaborn>=0.9.0**
+- **matplotlib>=3.1.1**
 
 ## 3. Some useful utilities
 
