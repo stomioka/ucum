@@ -1,7 +1,6 @@
+setuptools
 numpy
 pandas
 tqdm
-urllib
 seaborn
-sklearn
 matplotlib

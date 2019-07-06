@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: pyucum
-Version: 0.0.6
+Version: 0.1.0
 Summary: Python library for using UCUM APIs to verify CDISC LB and ADLB
-Home-page: https://github.com/stomioka/sdtm_mapper
+Home-page: https://github.com/stomioka/ucum
 Author: Sam Tomioka
 Author-email: stomioka@gmail.com
 License: LICENSE
@@ -40,7 +40,6 @@ Description: # pyucum
         - **numpy**
         - **pandas**
         - **tqdm**
-        - **urllib**
         - **seaborn**
         - **matplotlib**
         

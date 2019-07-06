@@ -32,7 +32,6 @@ Following packages are required
 - **numpy**
 - **pandas**
 - **tqdm**
-- **urllib**
 - **seaborn**
 - **matplotlib**
 
