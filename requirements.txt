@@ -3,7 +3,6 @@ numpy
 pandas
 tqdm
 urllib
-xml
 seaborn
 matplotlib
 bokeh

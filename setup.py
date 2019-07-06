@@ -14,7 +14,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     license='LICENSE',
     include_package_data=True,
-    install_requires=['numpy','pandas','tqdm ','urllib','xml','seaborn ','sklearn','matplotlib', 'bokeh'],
+    install_requires=['numpy','pandas','tqdm ','urllib','seaborn ','sklearn','matplotlib', 'bokeh'],
     url='https://github.com/stomioka/sdtm_mapper',
     packages=setuptools.find_packages(),
     classifiers=[

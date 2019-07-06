@@ -17,7 +17,7 @@ import xml.etree.ElementTree as ET
 # visualizations
 import seaborn as sns
 import matplotlib.pyplot as plt
-from bokeh.plotting import figure, show, output_file
+#from bokeh.plotting import figure, show, output_file
 
 
 import random

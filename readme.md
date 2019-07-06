@@ -29,7 +29,7 @@ pip install pyucum
 ```
 Following packages are required
 
-'numpy','pandas','tqdm ','urllib','xml','seaborn ','sklearn','matplotlib', 'bokeh'
+'numpy','pandas','tqdm ','urllib','seaborn ','sklearn','matplotlib', 'bokeh'
 
 
 ## 3. Some useful utilities
