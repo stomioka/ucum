@@ -29,8 +29,17 @@ pip install pyucum
 ```
 Following packages are required
 
+<<<<<<< HEAD
 'numpy','pandas','tqdm ','urllib','seaborn ','sklearn','matplotlib', 'bokeh'
 
+=======
+- **numpy**
+- **pandas**
+- **tqdm**
+- **urllib**
+- **seaborn**
+- **matplotlib**
+>>>>>>> gh-pages
 
 ## 3. Some useful utilities
 
