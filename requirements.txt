@@ -1,6 +1,6 @@
 setuptools
 numpy>=1.15.0
 pandas>=0.23.0
-tqdm4>=4.32.2
+tqdm>=4.32.2
 seaborn>=0.9.0
 matplotlib>=3.1.1

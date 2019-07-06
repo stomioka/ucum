@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyucum
-Version: 0.1.2
+Version: 0.1.3
 Summary: Python library for using UCUM APIs to verify CDISC SDTM.LB and ADaM.ADLB
 Home-page: https://github.com/stomioka/ucum
 Author: Sam Tomioka
