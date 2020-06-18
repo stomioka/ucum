@@ -133,7 +133,7 @@ def convert_unit(dfin, url, patterns, loinconly=0):
     for i in tnrange(0,len(checklist), desc='Verification'):
         #print(checklist[i], i)
         try:
-            with urllib.request.urlopen(checklist[i]) as res:
+            with urllib.request.urlopen(checklist[i],headers={'Accept': 'application/xml'}) as res:
                 context=ET.fromstring(res.read())
 
                 for child in context:
